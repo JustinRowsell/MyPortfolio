@@ -1,9 +1,9 @@
 import React from 'react'
+import Layout from '../components/layout';
 
 export default ({pageContext}) => (
-    <div>
-        <h1>
-            {pageContext.title}
+    <Layout>
+        <h1 dangerouslySetInnerHTML={{__html: pageContext.title}}>
         </h1>
-    </div>
+    </Layout>
 );
