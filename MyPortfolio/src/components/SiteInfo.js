@@ -27,9 +27,7 @@ const SiteInfo = () => (
       <SiteInfoWrapper>
         <SiteTitle dangerouslySetInnerHTML={{__html: props.allWordpressSiteMetadata.edges[0].node.name}}>
         </SiteTitle>
-        <div>
-          {props.allWordpressSiteMetadata.edges[0].node.description}
-        </div>
+        <div dangerouslySetInnerHTML={{__html: props.allWordpressSiteMetadata.edges[0].node.description}} />
       </SiteInfoWrapper>
     )}
     />
