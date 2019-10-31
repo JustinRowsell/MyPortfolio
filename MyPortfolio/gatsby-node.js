@@ -68,7 +68,7 @@ exports.createPages = ({ graphql, actions }) => {
       })
       // ==== END PAGES ====
  
-      // ==== POSTS (WORDPRESS NATIVE AND ACF) ====
+      // ==== PORTFOLIOS (WORDPRESS NATIVE AND ACF) ====
       .then(() => {
         graphql(
           `
@@ -108,9 +108,50 @@ exports.createPages = ({ graphql, actions }) => {
               context: edge.node,
             })
           })
-          resolve()
         })
       })
-    // ==== END POSTS ====
+    // ==== END PORTFOLIO ====
+    // ==== BLOG POSTS ====
+      .then(() => {
+        graphql(`
+        {
+          allWordpressPost {
+            edges{
+              node{
+                title
+                content
+                excerpt
+                wordpress_id
+                date
+              }
+            }
+          }
+        }
+        `).then(result => {
+            if (result.errors) {
+              console.log(result);
+              reject(result.errors);
+            }
+            
+            const posts = result.data.allWordpressPost.edges;
+            const postsPerPage = 2;
+            const numberOfPages = Math.ceil(posts.length / postsPerPage);
+            const blogPostListTemplate = path.resolve('./src/templates/blogPostList.js');
+            
+            Array.from({length: numberOfPages}).forEach((page, index) => {
+              createPage({
+                path: index === 0 ? '/blog' : `/blog/${index + 1}`,
+                context: {
+                  posts: posts.slice(index * postsPerPage, (index * postsPerPage) + postsPerPage),
+                  numberOfPages,
+                  currentPage: index + 1
+                },
+                component: slash(blogPostListTemplate)
+              })
+            })
+
+            resolve();
+        })
+      })
   })
 }
